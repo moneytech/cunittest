@@ -1,26 +1,19 @@
 #ifndef CUNITTEST_H
 
 /**
- * Basic protocol for interactive connections.
+ * C99 Unit Test
  *
- * If you want to use this tiny API you just have to specify a
- * struct Endpoint instance that defines the function pointers.
+ * This code can be used as whole or parts of it in any way you want. There are 
+ * totally NO restrictions to it.
+ * 
+ * Yes really!
  */
 
+#include <stdlib.h>
+#include <stdio.h>
 
 //-----------------------------------------------------
 //-- Configuration
-
-// This section contains the configurable parts of the protocol.h in
-// a limited but kind of safe way. Use it wisely.
-
-#ifndef SKIP_STDLIB
-#include <stdlib.h>
-#endif // SKIP_STDLIB
-
-#ifndef SKIP_STDIO
-#include <stdio.h>
-#endif // SKIP_STDIO
 
 #ifndef NULL
 #define NULL 0
@@ -139,20 +132,20 @@ int __cunittest_is_test_enabled(int argc, char *argv[], char *name)
 
 TestSuite ("Protocol Basic Tests")
 {
-    UnitTest ("Protocol Initialization")
+    UnitTest ("Basic stuff")
     {
-        
-    }
-    
-    UnitTest ("Protocol Cleanup")
-    {
+        Verify(1 == 1);
+        int i = srand(my_seed);
+        // Is allowed to fail:
+        SoftVerify(i % 2 == 0);
 
     }
     
-    UnitTest ("")
+    UnitTest ("Anythign else")
     {
-
+        ...
     }
+    
 }
 
 #endif 
