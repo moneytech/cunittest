@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 //-----------------------------------------------------
 //-- Configuration
@@ -33,7 +34,8 @@ int __TestResult = 1;
 
 #define TestErrorExit __TestResult = cunittest_TestError; return
 
-#define TestSuite(name) int __test_main(int argc, char *argv, int __test_result, int *__failed_tests, int *__test_count); \
+#define TestSuite(name) \
+int __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count); \
 int main(int argc, char *argv[]) \
 { \
     int __cunittest_error_code = 0; \
@@ -58,7 +60,7 @@ int main(int argc, char *argv[]) \
     __cunittest_stats(testResult, failedTests, testCount); \
     \
 } \
-int __test_main(int argc, char *argv, int *__test_result, int *__failed_tests, int *__test_count) \
+int __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count) \
 
 
 #define UnitTest(name) printf("Testing %s\n", #name); if (__cunittest_is_test_enabled(argc, argv, #name) == 1) { (*__test_count)++; } \
@@ -98,7 +100,7 @@ int __cunittest_cleanup(char **__cunittest_error)
 
 int __cunittest_stats(int __test_result, int __failed_tests, int __test_count)
 {
-    printf("%d of %d passed. %d failed:", __test_count - __failed_tests, __test_count, __failed_tests);
+    printf("%d of %d passed. %d failed.\n", __test_count - __failed_tests, __test_count, __failed_tests);
 
     return 1;
 }
