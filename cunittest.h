@@ -67,12 +67,12 @@ int __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests,
 if (__cunittest_is_test_enabled(argc, argv, #name) == 1)
 
 //-- Verify and fail if false
-#define Verify(condition) if ( ! condition ) { (*__failed_tests)++; printf("Verify failed: %s\n", #condition); }
-#define VerifyPrint(condition, message) if ( ! condition ) { (*__failed_tests)++; printf("Verify failed: %s\n%s\n", #condition, message); }
+#define Verify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf("Verify failed: %s\n", #condition); }
+#define VerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf("Verify failed: %s\n%s\n", #condition, message); }
 
 //-- Verify without failing test
-#define SoftVerify(condition) if ( ! condition ) { (*__failed_tests)++; printf("Soft verify failed: %s\n", #condition); }
-#define SoftVerifyPrint(condition, message) if ( ! condition ) { (*__failed_tests)++; printf("Soft verify failed: %s\n%s\n", #condition, message); }
+#define SoftVerify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf("Soft verify failed: %s\n", #condition); }
+#define SoftVerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf("Soft verify failed: %s\n%s\n", #condition, message); }
 
 #ifndef SKIP_MAIN
 
@@ -109,7 +109,6 @@ int __cunittest_stats(int __test_result, int __failed_tests, int __test_count)
 int __cunittest_is_test_enabled(int argc, char *argv[], char *name)
 {
     int i = 0;
-    
     if (argc < 2 || (argc == 2 && argv[1][0] == '*'))
     {
         return 1;
