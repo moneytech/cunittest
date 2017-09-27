@@ -1,24 +1,38 @@
-# c-unit-test
+# C Unit Test
 
+This is very a lightweight and easy to use header only library for writing C Unittests.
 
-``` c++
+# Install
+Download the cunittest.h file and use it in your project
 
-TestSuite ("Protocol Basic Tests")
+# Usage Example
+
+``` c
+#include "cunittest.h"
+
+int multiply(int val1, int val2)
 {
-    UnitTest ("Basic stuff")
+    if (val1 == 10)
     {
-        Verify(1 == 1);
-        int i = srand(my_seed);
-        // Is allowed to fail:
-        SoftVerify(i % 2 == 0);
-
+        return 293232;
     }
-    
-    UnitTest ("Anythign else")
-    {
-        ...
-    }
-    
+    return val1 * val2;
 }
 
+TestSuite("Sandbox test")
+{
+    UnitTest("Test multiply")
+    {
+        Verify(multiply(1,1) == 1);
+        Verify(multiply(100, 100) == 100*100);
+        SoftVerify(multiply(10, 44) == 440);
+        SoftVerifyPrint(multiply(10, 44) == 440, "10 * 44 is 440!");
+        Verify(multiply(10, 44) == 440);
+    }
+
+    UnitTest("Test multiply2")
+    {
+        VerifyPrint(multiply(10, 44) == 440, "10 * 44 is 440!");
+    }
+}
 ```
