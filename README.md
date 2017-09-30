@@ -1,10 +1,11 @@
 # C Unit Test
 
 This is very a lightweight and easy-to-use library for writing C unit tests.
+Every TestSuite lives in his own main file so it is quickly compiled as standalone
+executable.
 
 # Install
-Download the source with 
-
+Download the source with the following git command:
 ```
 $ git clone https://github.com/ToolsDevler/cunittest.git
 ```
@@ -40,6 +41,3 @@ TestSuite("Sandbox test")
     }
 }
 ```
-
-# Are there any limitations?
-Yes. The TestSuite macro inserts an implementation of the main function which limits the number of suites to one per file.
