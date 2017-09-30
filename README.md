@@ -1,11 +1,16 @@
 # C Unit Test
 
-This is very a lightweight and easy to use header only library for writing C Unittests.
+This is very a lightweight and easy-to-use library for writing C unit tests.
+Every TestSuite lives in his own main file so it is quickly compiled as standalone
+executable.
 
 # Install
-Download the cunittest.h file and use it in your project
+Download the source with the following git command:
+```
+$ git clone https://github.com/ToolsDevler/cunittest.git
+```
 
-# Usage Example
+Include the cunittest.h into your main file and write your unit tests.
 
 ``` c
 #include "cunittest.h"
@@ -21,7 +26,7 @@ int multiply(int val1, int val2)
 
 TestSuite("Sandbox test")
 {
-    UnitTest("Test multiply")
+    UnitTest("multiply")
     {
         Verify(multiply(1,1) == 1);
         Verify(multiply(100, 100) == 100*100);

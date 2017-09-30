@@ -1,12 +1,22 @@
 #ifndef CUNITTEST_H
 
 /**
- * C99 Unit Test
+ * Lightweight unit test library for C
  *
  * This code can be used as whole or parts of it in any way you want. There are 
  * totally NO restrictions to it.
  * 
- * Yes really!
+ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
+ * SUCH DAMAGE.
  */
 
 #include <stdlib.h>
@@ -20,135 +30,94 @@
 #define NULL 0
 #endif
 
+#ifndef TRUE
+#define TRUE 1
+#define FALSE 0
+#endif // TRUE
+
 //-----------------------------------------------------
 //-- Constants
 
 const int cunittest_TestSuccess = 1;
 const int cunittest_TestError = 0;
 
-int __TestResult = 1;
+//-----------------------------------------------------
+//-- Messages
+
+const char *cunittest_Message_Intro = "Initialize test suite: %s\n";
+const char *cunittest_Message_Stats = "%d of %d passed. %d failed.\n";
+
+const char *cunittest_Message_ExecuteUnitTest = "Unit test: %s\n";
+
+const char *cunittest_Message_VerifyFailed = "Verify failed %s\n";
+const char *cunittest_Message_VerifyFailedWithMessage = "Verify failed %s\n%s\n";
+const char *cunittest_Message_SoftVerifyFailed = "Soft verify failed %s\n";
+const char *cunittest_Message_SoftVerifyFailedWithMessage = "Soft verify failed %s\n%s\n";
 
 
 //-----------------------------------------------------
-//-- Macros
+//-- API
 
-#define TestErrorExit __TestResult = cunittest_TestError; return
+// Sets the error state and returns from the test function.
+#define TestErrorExit *__test_result = cunittest_TestError; return
 
+// Initializes a test suite (only one per file!) where unit tests can be spawned.
 #define TestSuite(name) \
-int __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count); \
+void __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count); \
 int main(int argc, char *argv[]) \
 { \
-    int __cunittest_error_code = 0; \
-    char *__cunittest_error; \
-    __cunittest_error_code = __cunittest_init(argc, argv, &__cunittest_error); \
-    if (__cunittest_error_code != cunittest_TestSuccess) \
-    { \
-        printf("Error while initializing cunittest: %s\n", __cunittest_error); \
-        return -1; \
-    } \
-    __cunittest_intro(#name); \
+    int cunittest_error_code = 0; \
+    char *cunittest_error; \
+    printf(cunittest_Message_Intro, #name); \
     int testResult = 0; \
     int failedTests = 0; \
     int testCount = 0; \
     __test_main(argc, argv, &testResult, &failedTests, &testCount); \
-    __cunittest_error_code = __cunittest_cleanup(&__cunittest_error); \
-    if (__cunittest_error_code != cunittest_TestSuccess) \
-    { \
-        printf("Error while initializing cunittest: %s\n", __cunittest_error); \
-        return -1; \
-    } \
-    __cunittest_stats(testResult, failedTests, testCount); \
+    printf(cunittest_Message_Stats, testCount - failedTests, testCount, failedTests); \
     \
 } \
-int __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count) \
+void __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count) \
 
+// Creates a new unit test which is only executed if it is enabled.
+#define UnitTest(name) printf(cunittest_Message_ExecuteUnitTest, #name); if (cunittest_is_test_enabled(argc, argv, #name) == 1) { (*__test_count)++; } \
+if (cunittest_is_test_enabled(argc, argv, #name) == 1)
 
-#define UnitTest(name) printf("Testing %s\n", #name); if (__cunittest_is_test_enabled(argc, argv, #name) == 1) { (*__test_count)++; } \
-if (__cunittest_is_test_enabled(argc, argv, #name) == 1)
+// Verify and fail if false
+#define Verify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf(cunittest_Message_VerifyFailed, #condition); }
 
-//-- Verify and fail if false
-#define Verify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf("Verify failed: %s\n", #condition); }
-#define VerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf("Verify failed: %s\n%s\n", #condition, message); }
+// Verify and fail with defined message
+#define VerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf(cunittest_Message_VerifyFailedWithMessage, #condition, message); }
 
-//-- Verify without failing test
-#define SoftVerify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf("Soft verify failed: %s\n", #condition); }
-#define SoftVerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf("Soft verify failed: %s\n%s\n", #condition, message); }
+// Verify without failing
+#define SoftVerify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf(cunittest_Message_SoftVerifyFailed, #condition); }
 
-#ifndef SKIP_MAIN
+// Verify without failing with defined message
+#define SoftVerifyPrint(condition, message) if ( ! (condition) ) { (*__failed_tests)++; printf(cunittest_Message_SoftVerifyFailedWithMessage, #condition, message); }
 
-
-//-----------------------------------------------------
-//-- Implementation
-
-int __cunittest_init(int argc, char *argv[], char **__cunittest_error)
-{
-    // Nothing yet
-    return cunittest_TestSuccess;
-}
-
-int __cunittest_intro(char *name)
-{
-    printf("Init test suite %s\n", name);
-    return cunittest_TestSuccess;
-}
-
-int __cunittest_cleanup(char **__cunittest_error)
-{
-    // Nothing yet
-    return cunittest_TestSuccess;
-}
-
-int __cunittest_stats(int __test_result, int __failed_tests, int __test_count)
-{
-    printf("%d of %d passed. %d failed.\n", __test_count - __failed_tests, __test_count, __failed_tests);
-
-    return 1;
-}
-
-
-int __cunittest_is_test_enabled(int argc, char *argv[], char *name)
+/**
+ * Checks if the name of a unit test has been activated by passing it as command line argument.
+ * 
+ * If no argument has been passed, all tests are enabled by default.
+ */
+static int cunittest_is_test_enabled(int argc, char *argv[], char *name)
 {
     int i = 0;
     if (argc < 2 || (argc == 2 && argv[1][0] == '*'))
     {
-        return 1;
+        return TRUE;
     }
     else
     {
         for (i = 1; i < argc; i++)
         {
-            if (strcmp(argv[i], name) == 0)
+            if (argv[i][0] != '-' && strcmp(argv[i], name) == 0)
             {
-                return 1;
+                return TRUE;
             }
         }
     }
 
-    return 0;
+    return FALSE;
 }
-
-#endif // SKIP_MAIN
-
-#ifdef CUNITTEST_TEST
-
-TestSuite ("Protocol Basic Tests")
-{
-    UnitTest ("Basic stuff")
-    {
-        Verify(1 == 1);
-        int i = srand(my_seed);
-        // Is allowed to fail:
-        SoftVerify(i % 2 == 0);
-
-    }
-    
-    UnitTest ("Anythign else")
-    {
-        ...
-    }
-    
-}
-
-#endif 
 
 #endif // CUNITTEST_H
