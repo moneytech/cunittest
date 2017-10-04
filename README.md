@@ -6,7 +6,6 @@ executable.
 
 # Install
 Download the source with the following git command:
-
 ```
 $ git clone https://github.com/ToolsDevler/cunittest.git
 ```
