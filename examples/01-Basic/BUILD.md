@@ -1,4 +1,4 @@
-#How to build this
+How to build this:
 
 ```shell
 mkdir build && cd build
