@@ -1,8 +1,9 @@
 # C Unit Test
 
 This is very a lightweight and easy-to-use library for writing C unit tests.
-Every TestSuite lives in his own main file so it is quickly compiled as standalone
-executable.
+It targets small hobby projects which don't need any advanced features (e.g. like code coverage).
+
+Every TestSuite lives in his own main file so it is quickly compiled as standalone executable.
 
 # Install
 Download the source with the following git command:
