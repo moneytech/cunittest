@@ -13,7 +13,7 @@ TestSuite("Sandbox test")
         Verify(multiply(10, 44) == 440);
     }
 
-    UnitTest("Test multiply2")
+    UnitTest("multiply2")
     {
         VerifyPrint(multiply(10, 44) == 440, "10 * 44 is 440!");
     }

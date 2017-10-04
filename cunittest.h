@@ -79,8 +79,8 @@ int main(int argc, char *argv[]) \
 void __test_main(int argc, char *argv[], int *__test_result, int *__failed_tests, int *__test_count) \
 
 // Creates a new unit test which is only executed if it is enabled.
-#define UnitTest(name) printf(cunittest_Message_ExecuteUnitTest, #name); if (cunittest_is_test_enabled(argc, argv, #name) == 1) { (*__test_count)++; } \
-if (cunittest_is_test_enabled(argc, argv, #name) == 1)
+#define UnitTest(name) if (cunittest_is_test_enabled(argc, argv, name)) { printf(cunittest_Message_ExecuteUnitTest, #name); (*__test_count)++; } \
+if (cunittest_is_test_enabled(argc, argv, name))
 
 // Verify and fail if false
 #define Verify(condition) if ( ! (condition) ) { (*__failed_tests)++; printf(cunittest_Message_VerifyFailed, #condition); }
